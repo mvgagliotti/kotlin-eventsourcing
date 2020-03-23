@@ -9,3 +9,7 @@ data class ItemDTO(
     val description: String,
     val amount: Int
 )
+
+data class OrderCreatedResponseDTO(
+    val id: String
+)
