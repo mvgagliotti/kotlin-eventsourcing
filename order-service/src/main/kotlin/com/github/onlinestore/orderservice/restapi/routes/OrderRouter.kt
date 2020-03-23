@@ -9,6 +9,7 @@ class OrderRouter(
     fun addRoutes() {
         ApiBuilder.path("order") {
             ApiBuilder.post(orderController::post)
+            ApiBuilder.get(":order-id", orderController::get)
         }
     }
 }

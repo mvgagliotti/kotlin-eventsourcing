@@ -1,7 +1,6 @@
 package com.github.onlinestore.orderservice.akka.adapter
 
 import akka.actor.typed.ActorRef
-import akka.persistence.typed.ExpectingReply
 import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.javadsl.CommandHandler
 import akka.persistence.typed.javadsl.EventHandler
@@ -9,15 +8,12 @@ import akka.persistence.typed.javadsl.EventSourcedBehavior
 import com.github.onlinestore.orderservice.eventsourcing.DoNotPersistEvent
 import com.github.onlinestore.orderservice.eventsourcing.ESAggregate
 import org.slf4j.LoggerFactory
-import sun.rmi.runtime.Log
 import kotlin.reflect.full.findAnnotation
 
 data class CommandWithReplyTo<Command, Event>(
     val command: Command,
     val replyTo: ActorRef<Event>
-) : ExpectingReply<Event> {
-    override fun replyTo() = replyTo
-}
+)
 
 abstract class EventSourcingActorAdapter<Command, Event, State>(persistenceId: PersistenceId?) :
     EventSourcedBehavior<CommandWithReplyTo<Command, Event>, Event, State>(persistenceId) {
@@ -42,7 +38,7 @@ abstract class EventSourcingActorAdapter<Command, Event, State>(persistenceId: P
 
                         if ((event as Any)::class.findAnnotation<DoNotPersistEvent>() != null) {
                             logger.info("Skipping persisting for $event")
-                            Effect().reply(cmdWithReplyTo, event)
+                            Effect().reply(cmdWithReplyTo.replyTo, event)
                         } else {
                             Effect()
                                 .persist(event)

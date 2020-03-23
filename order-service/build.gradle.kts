@@ -24,8 +24,8 @@ dependencies {
     /// Versions
     /////////////////////
     val scalaVersion = "2.13"
-    val scalaTestVersion = "3.0.8"
-    val akkaVersion = "2.5.27"
+    val akkaVersion = "2.6.4"
+    val cassandraPluginVersion = "0.103"
 
     /////////////////////
     /// Main dependencies
@@ -37,6 +37,7 @@ dependencies {
 
     //Akka persistence
     implementation("com.typesafe.akka:akka-persistence-typed_$scalaVersion:$akkaVersion")
+    implementation("com.typesafe.akka:akka-persistence-query_$scalaVersion:$akkaVersion")
 
     //Akka cluster sharding
     implementation("com.typesafe.akka:akka-cluster-sharding-typed_$scalaVersion:$akkaVersion")
@@ -51,7 +52,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
     //Cassandra persistence plugin
-    implementation("com.typesafe.akka:akka-persistence-cassandra_$scalaVersion:0.101")
+    implementation("com.typesafe.akka:akka-persistence-cassandra_$scalaVersion:$cassandraPluginVersion")
 
     //Jackson
     implementation("com.fasterxml.jackson.core:jackson-databind:2.10.1")

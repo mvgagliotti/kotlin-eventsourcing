@@ -1,9 +1,6 @@
 package com.github.onlinestore.orderservice.restapi.controllers
 
-import com.github.onlinestore.orderservice.domain.CreateOrderCommand
-import com.github.onlinestore.orderservice.domain.Item
-import com.github.onlinestore.orderservice.domain.OrderCommand
-import com.github.onlinestore.orderservice.domain.OrderEvent
+import com.github.onlinestore.orderservice.domain.*
 import com.github.onlinestore.orderservice.eventsourcing.CommandFirer
 import com.github.onlinestore.orderservice.restapi.dtos.OrderCreatedResponseDTO
 import com.github.onlinestore.orderservice.restapi.dtos.OrderDTO
@@ -17,6 +14,21 @@ class OrderController(
 ) {
 
     private val logger = LoggerFactory.getLogger(OrderController::class.java)
+
+    fun get(ctx: Context) {
+        val id = ctx.pathParam("order-id")
+        val command = Get(id)
+
+        val future = commandFirer
+            .fire(command, id)
+            .toCompletableFuture()
+            .thenApply { evt ->
+                val order = (evt as GetEvent).order
+                return@thenApply order
+            }
+
+        ctx.json(future)
+    }
 
     fun post(ctx: Context) {
         logger.info("$commandFirer is ready!")
