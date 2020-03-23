@@ -1,5 +1,6 @@
 package com.github.onlinestore.orderservice.akka
 
+import akka.actor.typed.ActorRef
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.javadsl.AskPattern
 import akka.cluster.sharding.typed.ShardingEnvelope
@@ -23,6 +24,20 @@ class AkkaCommandFirer<Command, Event>(
                     ShardingEnvelope(entityId, CommandWithReplyTo(command, replyTo))
                 },
                 Duration.ofSeconds(4),
-                system.scheduler())
+                system.scheduler()
+            )
     }
 }
+
+fun <T, R> ActorRef<T>.ask(
+    actorSystem: ActorSystem<Void>,
+    msg: T,
+    func: (T, ActorRef<R>) -> T
+) = AskPattern.ask<T, R>(
+    this,
+    Function { replyTo ->
+        func.invoke(msg, replyTo)
+    },
+    Duration.ofSeconds(4),
+    actorSystem.scheduler()
+)

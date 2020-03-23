@@ -14,11 +14,13 @@ sealed class OrderCommand(open val orderId: String) : CborSerializable
 data class CreateOrderCommand(
     override val orderId: String,
     val userId: String,
-    val items: List<Item>) : OrderCommand(orderId)
+    val items: List<Item>
+) : OrderCommand(orderId)
 
 data class AddItemsCommand(
     override val orderId: String,
-    val items: List<Item>) : OrderCommand(orderId)
+    val items: List<Item>
+) : OrderCommand(orderId)
 
 
 data class Get(override val orderId: String) : OrderCommand(orderId)
@@ -29,16 +31,19 @@ sealed class OrderEvent(open val orderId: String) : CborSerializable
 data class OrderCreatedEvent(
     override val orderId: String,
     val userId: String,
-    val items: List<Item>) : OrderEvent(orderId)
+    val items: List<Item>
+) : OrderEvent(orderId)
 
 data class ItemsAddedEvent(
     override val orderId: String,
-    val items: List<Item>) : OrderEvent(orderId)
+    val items: List<Item>
+) : OrderEvent(orderId)
 
 @DoNotPersistEvent
 data class GetEvent(
     override val orderId: String,
-    val order: Order?) : OrderEvent(orderId)
+    val order: Order?
+) : OrderEvent(orderId)
 
 //state
 data class OrderState(val order: Order = EMPTY_ORDER)
@@ -64,8 +69,10 @@ object OrderAggregate : ESAggregate<OrderCommand, OrderEvent, OrderState> {
      * @return the event to be persisted
      */
     override fun handleCommand(command: OrderCommand, state: OrderState): OrderEvent = when (command) {
-        is CreateOrderCommand ->
+        is CreateOrderCommand -> {
+            check(command.items.isNotEmpty()) { "Cannot create an order without items" }
             OrderCreatedEvent(command.orderId, command.userId, command.items)
+        }
         is AddItemsCommand ->
             ItemsAddedEvent(command.orderId, command.items)
         is Get -> {
@@ -83,9 +90,13 @@ object OrderAggregate : ESAggregate<OrderCommand, OrderEvent, OrderState> {
      */
     override fun handleEvent(state: OrderState, event: OrderEvent): OrderState = when (event) {
         is OrderCreatedEvent ->
-            OrderState(Order(id = event.orderId,
-                             userId = event.userId,
-                             items = event.items))
+            OrderState(
+                Order(
+                    id = event.orderId,
+                    userId = event.userId,
+                    items = event.items
+                )
+            )
 
         is ItemsAddedEvent -> TODO()
         is GetEvent -> state

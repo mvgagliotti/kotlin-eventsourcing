@@ -66,6 +66,9 @@ dependencies {
 
     //Koin
     compile("org.koin:koin-core:2.1.3")
+    
+    testCompile("com.typesafe.akka:akka-actor-testkit-typed_$scalaVersion:$akkaVersion")
+    testCompile("junit:junit:4.12")
 }
 
 tasks.withType<KotlinCompile> {

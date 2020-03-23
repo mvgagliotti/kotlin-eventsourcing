@@ -9,7 +9,7 @@ import com.github.onlinestore.orderservice.domain.OrderState
 import com.github.onlinestore.orderservice.eventsourcing.ESAggregate
 
 class OrderActor(
-    persistenceId: PersistenceId
+    persistenceId: PersistenceId? = null
 ) : EventSourcingActorAdapter<OrderCommand, OrderEvent, OrderState>(persistenceId) {
 
     override val adaptee: ESAggregate<OrderCommand, OrderEvent, OrderState>
