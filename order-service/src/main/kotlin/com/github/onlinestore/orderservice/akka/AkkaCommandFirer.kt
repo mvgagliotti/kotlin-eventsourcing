@@ -12,7 +12,7 @@ import java.util.concurrent.CompletionStage
 
 class AkkaCommandFirer<Command, Event>(
     val sr: ShardRegionActorRef<Command, Event>,
-    val system: ActorSystem<Any>
+    val system: ActorSystem<Void>
 ) : CommandFirer<Command, Event> {
 
     override fun fire(command: Command, entityId: String): CompletionStage<Event> {

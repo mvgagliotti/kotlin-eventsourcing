@@ -16,6 +16,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -56,6 +57,15 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.10.1")
     implementation("com.fasterxml.jackson.core:jackson-core:2.10.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
+
+    //SLF4JSimple
+    implementation("org.slf4j:slf4j-simple:1.7.25")
+
+    //Javalin
+    implementation("io.javalin:javalin:3.7.0")
+
+    //Koin
+    compile("org.koin:koin-core:2.1.3")
 }
 
 tasks.withType<KotlinCompile> {

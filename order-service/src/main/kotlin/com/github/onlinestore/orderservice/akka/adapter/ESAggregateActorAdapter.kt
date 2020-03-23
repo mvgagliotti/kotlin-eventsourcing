@@ -8,6 +8,8 @@ import akka.persistence.typed.javadsl.EventHandler
 import akka.persistence.typed.javadsl.EventSourcedBehavior
 import com.github.onlinestore.orderservice.eventsourcing.DoNotPersistEvent
 import com.github.onlinestore.orderservice.eventsourcing.ESAggregate
+import org.slf4j.LoggerFactory
+import sun.rmi.runtime.Log
 import kotlin.reflect.full.findAnnotation
 
 data class CommandWithReplyTo<Command, Event>(
@@ -20,6 +22,9 @@ data class CommandWithReplyTo<Command, Event>(
 abstract class EventSourcingActorAdapter<Command, Event, State>(persistenceId: PersistenceId?) :
     EventSourcedBehavior<CommandWithReplyTo<Command, Event>, Event, State>(persistenceId) {
 
+
+    val logger = LoggerFactory.getLogger(EventSourcingActorAdapter::class.java)
+
     abstract val adaptee: ESAggregate<Command, Event, State>
 
     override fun emptyState(): State = adaptee.emptyState()
@@ -29,12 +34,14 @@ abstract class EventSourcingActorAdapter<Command, Event, State>(persistenceId: P
         return newCommandHandlerBuilder()
             .forAnyState()
             .onCommand(
-                CommandWithReplyTo::class.java as Class<CommandWithReplyTo<Command, Event>>) { state, cmdWithReplyTo ->
+                CommandWithReplyTo::class.java as Class<CommandWithReplyTo<Command, Event>>
+            ) { state, cmdWithReplyTo ->
                 adaptee
                     .handleCommand(cmdWithReplyTo.command, state)
                     .let { event ->
 
                         if ((event as Any)::class.findAnnotation<DoNotPersistEvent>() != null) {
+                            logger.info("Skipping persisting for $event")
                             Effect().reply(cmdWithReplyTo, event)
                         } else {
                             Effect()

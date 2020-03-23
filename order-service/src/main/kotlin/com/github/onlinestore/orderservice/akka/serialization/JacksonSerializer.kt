@@ -1,4 +1,4 @@
-package com.github.onlinestore.orderservice.serialization
+package com.github.onlinestore.orderservice.akka.serialization
 
 import akka.serialization.JSerializer
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper

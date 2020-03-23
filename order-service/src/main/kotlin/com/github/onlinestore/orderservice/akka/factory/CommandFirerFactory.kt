@@ -20,7 +20,7 @@ class CommandFirerFactory {
 
     fun <Command, Event, State> create(
         entityName: String,
-        actorSystem: ActorSystem<Any>,
+        actorSystem: ActorSystem<Void>,
         esActorAdapterFunction: ESActorAdapterFunction<Command, Event, State>): AkkaCommandFirer<Command, Event> {
 
         val entityTypeKey: EntityTypeKey<CommandWithReplyTo<Command, Event>> =
@@ -29,7 +29,7 @@ class CommandFirerFactory {
 
         val sharding = ClusterSharding.get(actorSystem)
 
-        val shardRegion =
+        val shardRegion: ActorRef<ShardingEnvelope<CommandWithReplyTo<Command, Event>>> =
             sharding.init(
                 Entity.of(entityTypeKey) { entityCtx ->
                     val id = PersistenceId(entityTypeKey.name() + "|" + entityCtx.entityId)

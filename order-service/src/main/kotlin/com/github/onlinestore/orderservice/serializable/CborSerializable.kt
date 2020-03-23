@@ -1,3 +1,0 @@
-package com.github.onlinestore.orderservice.serializable
-
-interface CborSerializable

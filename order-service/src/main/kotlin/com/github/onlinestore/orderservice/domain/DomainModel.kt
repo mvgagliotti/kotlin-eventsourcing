@@ -1,6 +1,6 @@
 package com.github.onlinestore.orderservice.domain
 
-import com.github.onlinestore.orderservice.serializable.CborSerializable
+import com.github.onlinestore.orderservice.akka.serializable.CborSerializable
 import java.math.BigDecimal
 
 val EMPTY_ORDER: Order = Order("", "", listOf())

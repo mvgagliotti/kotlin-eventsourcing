@@ -2,7 +2,7 @@ package com.github.onlinestore.orderservice.domain
 
 import com.github.onlinestore.orderservice.eventsourcing.DoNotPersistEvent
 import com.github.onlinestore.orderservice.eventsourcing.ESAggregate
-import com.github.onlinestore.orderservice.serializable.CborSerializable
+import com.github.onlinestore.orderservice.akka.serializable.CborSerializable
 
 /////////////////
 ///Aggregate protocol
